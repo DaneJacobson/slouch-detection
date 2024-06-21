@@ -33,7 +33,7 @@ def is_slouching(landmarks, optimal_dist):
     print(f"Current distance: {avg_shoulder_y}, Optimal distance: {optimal_dist}")
     # Determine slouching based on the vertical distance threshold
     return avg_shoulder_y * 0.99 > optimal_dist
-    return nose_to_shoulder_dist < optimal_dist  # Adjust threshold as needed
+    # return nose_to_shoulder_dist < optimal_dist
 
 while True:
     ret, frame = cap.read()
@@ -53,7 +53,7 @@ while True:
         if optimal_shoulder_height is None:
             cv2.putText(frame, "Sit up straight and press Space to set optimal position", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
         else:
-            # Check if the user is slouching
+            # Check if the human is slouching
             if is_slouching(result.pose_landmarks.landmark, optimal_shoulder_height):
                 cv2.putText(frame, "Slouching detected!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
     
