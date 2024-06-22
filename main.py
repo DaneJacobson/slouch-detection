@@ -1,6 +1,10 @@
 import numpy as np
 import cv2
 import mediapipe as mp
+import pygame
+
+# Initialize pygame mixer
+pygame.mixer.init()
 
 # Initialize webcam
 cap = cv2.VideoCapture(0)
@@ -14,6 +18,20 @@ mp_drawing = mp.solutions.drawing_utils
 
 # Variable to store the optimal distance when sitting up straight
 optimal_shoulder_height = None
+alarm_playing = False
+
+def play_alarm():
+    global alarm_playing
+    if not alarm_playing:
+        alarm_playing = True
+        pygame.mixer.music.load('alarm.wav')
+        pygame.mixer.music.play(-1)  # Play in a loop
+
+def stop_alarm():
+    global alarm_playing
+    if alarm_playing:
+        pygame.mixer.music.stop()
+        alarm_playing = False
 
 def is_slouching(landmarks, optimal_dist):
     if optimal_dist is None:
@@ -56,6 +74,9 @@ while True:
             # Check if the human is slouching
             if is_slouching(result.pose_landmarks.landmark, optimal_shoulder_height):
                 cv2.putText(frame, "Slouching detected!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
+                play_alarm()
+            else:
+                stop_alarm()
     
     # Display the resulting frame
     cv2.imshow('Frame', frame)
